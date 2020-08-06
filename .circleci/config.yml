@@ -8,10 +8,19 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test:
+      - test-1:
           # only run if build succeeds
           requires:
             - build
+      - test-2:
+          # only run if build succeeds
+          requires:
+            - build
+      - deploy:
+          # only run if test succeeds
+          requires:
+            - test-1
+            - test-2
 jobs:
   build:
     executor: node
@@ -19,9 +28,19 @@ jobs:
       - checkout
       - run: npm install
       - run: echo "Build Done"
-  test:
+  test-1:
     executor: node
     steps:
       - checkout
       - run: npm install
       - run: npm run test
+  test-2:
+    executor: node
+    steps:
+      - checkout
+      - run: echo "Test 2 Done"
+  deploy:
+    executor: node
+    steps:
+      - checkout
+      - run: echo "Deploy Done"
